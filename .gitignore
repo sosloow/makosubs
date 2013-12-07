@@ -6,3 +6,5 @@ public/lib/*
 test/lib/*
 *~
 #*#
+.#*
+lib/titlekit
