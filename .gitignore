@@ -1,0 +1,8 @@
+node_modules/*
+files/*
+logs/*
+tmp/*
+public/lib/*
+test/lib/*
+*~
+#*#
