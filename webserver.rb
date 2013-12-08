@@ -1,7 +1,6 @@
 require 'bundler/setup'
 require 'sinatra/base'
 require 'sinatra/json'
-require "sinatra/reloader"
 require 'mongo'
 require_relative 'lib/subs'
 
@@ -28,9 +27,23 @@ class MakoServer < Sinatra::Base
   end
   
   post '/subs/new' do
-    tmpfile = params[:subs_file][:tempfile]
-    name = params[:subs_file][:filename]
+    tmpfile = params[:file][:tempfile]
+    name = params[:file][:filename]
     
-    json Subtitles.import(tmpfile, name)
+    subs_col = settings.mongo_db['subs']
+    unless subs_col.find_one(name: name)
+      subs = {
+        name: name,
+        lines: Subtitles.import(tmpfile, name)
+      }
+      if subs[:lines]
+        subs_col.insert subs 
+        json subs_col.find_one(name: name)
+      else
+        json error: "Could not import from file"
+      end
+    else
+      json error: "File with this name already exists"
+    end
   end
 end

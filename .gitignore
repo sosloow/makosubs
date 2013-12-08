@@ -10,3 +10,4 @@ test/lib/*
 lib/titlekit
 lib/titlekit/*
 bower_components/*
+public/css/bootstrap.css

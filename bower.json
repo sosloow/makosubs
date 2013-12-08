@@ -3,17 +3,18 @@
   "license": "MIT",
   "dependencies": {
     "angular" : "latest",
-    "ng-file-upload" : "latest"
+    "ng-file-upload" : "latest",
+    "angular-route": "latest"
   },
   "devDependencies": {
     "angular-mocks": "latest",
     "angular-scenario": "latest"
   },
-  "install" : {
-    "path" : "public/lib",
-    "sources" : {
-      "angular" : ["bower_components/angular/angular.js",
-                   "bower_components/angular/angular.min.js"]
+  "install": {
+    "path": "public/lib",
+    "sources": {
+      "angular": ["bower_components/angular/angular.js",
+                  "bower_components/angular/angular.min.js"]
     }
   }
 }

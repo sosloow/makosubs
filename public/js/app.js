@@ -1,13 +1,13 @@
 'use strict';
-angular.module('myApp', [
+angular.module('MakoSubs', [
   'ngRoute',
-  'myApp.filters',
-  'myApp.services',
-  'myApp.directives',
-  'myApp.controllers'
+  'MakoSubs.filters',
+  'MakoSubs.services',
+  'MakoSubs.directives',
+  'MakoSubs.controllers'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/subs/new', {templateUrl: 'partials/new_subs.html', controller: 'MyCtrl1'});
-  $routeProvider.when('/subs', {templateUrl: 'partials/list_subs.html', controller: 'MyCtrl2'});
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.when('/subs/new', {templateUrl: 'partials/create_subs.html', controller: 'CreateSubsCtrl'});
+  $routeProvider.when('/subs', {templateUrl: 'partials/list_subs.html', controller: 'ListSubsCtrl'});
+  $routeProvider.otherwise({redirectTo: '/subs'});
 }]);
