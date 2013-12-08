@@ -27,7 +27,7 @@ class MakoServer < Sinatra::Base
     send_file 'public/index.html'
   end
   
-  post '/upload_subs' do
+  post '/subs/new' do
     tmpfile = params[:subs_file][:tempfile]
     name = params[:subs_file][:filename]
     
