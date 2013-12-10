@@ -8,14 +8,16 @@
   <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
+<div class="container">
   <ul class="menu">
     <li><a href="#/subs/new">Load new subtitles file</a></li>
     <li><a href="#/subs">List subs</a></li>
   </ul>
 
-  <div class="container" ng-view></div>
-
+  <div ng-view></div>
+</div>
   <script src="lib/angular/angular.js"></script>
+  <script src="lib/angular-resource/angular-resource.js"></script>
   <script src="lib/angular-route/angular-route.js"></script>
   <script src="lib/ng-file-upload/angular-file-upload.min.js"></script> 
   <script src="js/app.js"></script>

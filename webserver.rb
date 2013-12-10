@@ -1,6 +1,7 @@
 require 'bundler/setup'
 require 'sinatra/base'
 require 'sinatra/json'
+require 'json'
 require 'mongo'
 require_relative 'lib/subs'
 
@@ -26,24 +27,36 @@ class MakoServer < Sinatra::Base
     send_file 'public/index.html'
   end
   
-  post '/subs/new' do
+  get '/subs' do
+    json settings.mongo_db['subs'].
+      find({}, fields: ['filename', 'animu',
+                        'name', 'ep']).to_a
+  end
+
+  post '/subs' do
+  end
+  
+  post '/script_upload' do
     tmpfile = params[:file][:tempfile]
-    name = params[:file][:filename]
+    filename = params[:file][:filename]
     
     subs_col = settings.mongo_db['subs']
-    unless subs_col.find_one(name: name)
+    unless subs_col.find_one(filename: filename)
+      subs_info = JSON.parse(params[:subs])
       subs = {
-        name: name,
-        lines: Subtitles.import(tmpfile, name)
+        animu: subs_info['animu'],
+        ep: subs_info['ep'],
+        filename: filename,
+        lines: Subtitles.import(tmpfile, filename)
       }
       if subs[:lines]
-        subs_col.insert subs 
-        json subs_col.find_one(name: name)
+        subs_col.insert subs
+        json subs_col.find_one(filename: filename)
       else
         json error: "Could not import from file"
       end
     else
-      json error: "File with this name already exists"
+      json error: "File with this name already exists", subs: JSON.parse(params[:subs])
     end
   end
 end

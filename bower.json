@@ -4,7 +4,8 @@
   "dependencies": {
     "angular" : "latest",
     "ng-file-upload" : "latest",
-    "angular-route": "latest"
+    "angular-route": "latest",
+    "angular-resource": "latest"
   },
   "devDependencies": {
     "angular-mocks": "latest",

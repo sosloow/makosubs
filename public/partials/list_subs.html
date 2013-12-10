@@ -1,1 +1,11 @@
-<div class="subs-list"></div>
+<div class="row">
+  <ul class="list-unstyled">
+    <li ng-repeat="subs in subsList">
+      <a href="" ng-href="/subs/{{subs._id.$oid}}">
+        <span>Animu: {{subs.animu}}</span>
+        <span>Episode: {{subs.ep}}</span>
+        <span>Filename: {{subs.filename}}</span>
+      </a>
+    </li>
+  </ul>
+</div>

@@ -1,17 +1,19 @@
 'use strict';
 angular.module('MakoSubs.controllers', ['angularFileUpload']).
   controller('CreateSubsCtrl', ['$scope', '$upload', function($scope, $upload) {
+
     $scope.onFileSelect = function($files) {
       var $file = $files[0];
       $scope.upload = $upload.upload({
-        url: '/subs/new',
+        url: '/script_upload',
         data: {subs: $scope.subs},
         file: $file
       }).success(function(data, status, headers, config) {
+        $scope.subsPreview = data;
         console.log(data);
       });
     };
   }])
-  .controller('ListSubsCtrl', [function() {
-
+  .controller('ListSubsCtrl', ['$scope', 'Subs', function($scope, Subs) {
+    $scope.subsList = Subs.query(function(data){console.log(data);});
   }]);
