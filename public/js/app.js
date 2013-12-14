@@ -1,6 +1,7 @@
 'use strict';
 angular.module('MakoSubs', [
   'ngRoute',
+  'ui.bootstrap',
   'MakoSubs.filters',
   'MakoSubs.services',
   'MakoSubs.directives',

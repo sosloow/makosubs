@@ -1,14 +1,11 @@
 <div class="row">
-  <ul class="list-unstyled">
-    <li ng-repeat="subs in subsList">
-      <div class="well">
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="subs in subsList">
         <p>Animu: {{subs.animu}}</p>
         <p>Episode: {{subs.ep}}</p>
         <p>Filename: <a href="" ng-href="#/subs/{{subs._id.$oid}}"
                         >{{subs.filename}}</a>
         </p>
-
-      </div>
     </li>
   </ul>
 </div>

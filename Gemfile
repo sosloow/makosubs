@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-# muh waifu dsl
 gem 'sinatra'
 gem 'sinatra-contrib'
 

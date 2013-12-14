@@ -16,3 +16,5 @@
     cursor: inherit;
     display: block;
 }
+
+.nav, .pagination, .carousel a { cursor: pointer; }

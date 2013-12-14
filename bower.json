@@ -1,6 +1,4 @@
-{
-  "name": "angularjs-file-upload",
-  "license": "MIT",
+{ "name": "makosubs",
   "dependencies": {
     "angular" : "latest",
     "ng-file-upload" : "latest",

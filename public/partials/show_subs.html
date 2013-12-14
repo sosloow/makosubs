@@ -12,11 +12,14 @@
       </div>
     </div>
   </div>
-  <div class="col-xs-8 panel panel-default">
-    <div class="panel-body">
-      <ul class="subs-lines list-unstyled">
-        <li ng-repeat="line in subs.lines">{{line.lines}}</li>
-      </ul>
-    </div>
+  <div class="col-xs-8">
+    <accordion close-others="false">
+      <accordion-group ng-repeat="line in subs.lines" 
+                       heading="{{line.lines}}">
+        <input type="text" class="form-control" 
+               placeholder="Твой перевод"
+               ng-model="line.translation"/>
+      </accordion-group>
+    </accordion>
   </div>
 </div>
