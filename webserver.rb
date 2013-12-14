@@ -33,6 +33,11 @@ class MakoServer < Sinatra::Base
                         'name', 'ep']).to_a
   end
 
+  get '/subs/:subs_id' do |id|
+    json settings.mongo_db['subs'].
+      find_one(_id: BSON::ObjectId(id))
+  end
+  
   post '/subs' do
   end
   
