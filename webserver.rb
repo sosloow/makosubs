@@ -27,21 +27,21 @@ class MakoServer < Sinatra::Base
     send_file 'public/index.html'
   end
   
-  get '/subs' do
+  get '/api/subs' do
     json settings.mongo_db['subs'].
       find({}, fields: ['filename', 'animu',
                         'name', 'ep']).to_a
   end
 
-  get '/subs/:subs_id' do |id|
+  get '/api/subs/:subs_id' do |id|
     json settings.mongo_db['subs'].
       find_one(_id: BSON::ObjectId(id))
   end
   
-  post '/subs' do
+  post '/api/subs' do
   end
   
-  post '/script_upload' do
+  post '/api/script_upload' do
     tmpfile = params[:file][:tempfile]
     filename = params[:file][:filename]
     
@@ -63,5 +63,9 @@ class MakoServer < Sinatra::Base
     else
       json error: "File with this name already exists", subs: JSON.parse(params[:subs])
     end
+  end
+
+  get '/subs/?:subsId?' do
+    send_file 'public/index.html'
   end
 end

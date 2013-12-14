@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="en" ng-app="MakoSubs">
+<html lang="ru" ng-app="MakoSubs">
 <head>
   <meta charset="utf-8">
   <title>Makosubs</title>
 
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>  
   <link rel="stylesheet" href="css/app.css"/>
+  <base href="/"/>
 </head>
 <body>
-<div class="container">
+<div class="container" ng-controller="AppCtrl">
   <ul class="menu">
     <li><a href="#/subs/new">Load new subtitles file</a></li>
     <li><a href="#/subs">List subs</a></li>
   </ul>
-
   <div ng-view></div>
 </div>
   <script src="lib/angular/angular.js"></script>

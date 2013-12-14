@@ -6,9 +6,11 @@ angular.module('MakoSubs', [
   'MakoSubs.directives',
   'MakoSubs.controllers'
 ]).
-config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/subs/new', {templateUrl: 'partials/create_subs.html', controller: 'CreateSubsCtrl'});
-  $routeProvider.when('/subs/?', {templateUrl: 'partials/list_subs.html', controller: 'ListSubsCtrl'});
-  $routeProvider.when('/subs/:subsId', {templateUrl: 'partials/show_subs.html', controller: 'ShowSubsCtrl'});
-  $routeProvider.otherwise({redirectTo: '/subs'});
+config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+  $routeProvider.
+    when('/subs/new', {templateUrl: 'partials/create_subs.html', controller: 'CreateSubsCtrl'}).
+    when('/subs/?', {templateUrl: 'partials/list_subs.html', controller: 'ListSubsCtrl'}).
+    when('/subs/:subsId', {templateUrl: 'partials/show_subs.html', controller: 'ShowSubsCtrl'}).
+    otherwise({redirectTo: '/'});
+  $locationProvider.html5Mode(true);
 }]);
