@@ -61,7 +61,8 @@ class MakoServer < Sinatra::Base
                  lines: {'$elemMatch' => {id: line_id}}},
                {"$set" =>
                  {"lines.$.trans" => trans}})
-      json result
+      json settings.mongo_db['subs'].
+        find_one({_id: BSON::ObjectId(id)})
     else
       halt 400
     end
