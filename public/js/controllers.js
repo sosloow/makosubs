@@ -20,4 +20,20 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
   }])
   .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs', function($scope, $routeParams, Subs) {
     $scope.subs = Subs.get({subsId: $routeParams.subsId});
+
+    $scope.addTranslation = function(line) {
+      if (line.transForm.$valid) {
+        if(!line.trans)line.trans = [];
+        line.trans.push(line.newTran);
+        delete line.newTran;
+        line.isOpen = !line.isOpen;
+      }
+    };
+
+    $scope.isTranslated = function(line) {
+      if(line.trans)
+        return 'panel-success';
+      else
+        return 'panel-default';
+    };
   }]);

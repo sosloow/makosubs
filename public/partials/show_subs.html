@@ -5,7 +5,7 @@
         <h3 class="panel-title">{{subs.filename}}</h3>
       </div>
       <div class="panel-body">
-        <dl class="dl-horizontal">
+        <dl>
           <dt>Мультик</dt><dd>{{subs.animu}}</dd>
           <dt>Серия</dt><dd>{{subs.ep}}</dd>
         </dl>
@@ -14,11 +14,24 @@
   </div>
   <div class="col-xs-8">
     <accordion close-others="false">
-      <accordion-group ng-repeat="line in subs.lines" 
+      <accordion-group ng-repeat="line in subs.lines"
+                       ng-class="isTranslated(line)"
                        heading="{{line.lines}}">
-        <input type="text" class="form-control" 
-               placeholder="Твой перевод"
-               ng-model="line.translation"/>
+        <ul class="list-group">
+          <li class="list-group-item" 
+              ng-repeat="tran in line.trans"
+              >{{tran}}</li>
+        </ul>
+        <form name="line.transForm">
+          <input type="text" class="form-control" 
+                 placeholder="Твой перевод"
+                 ng-enter="addTranslation(line)"
+                 ng-model="line.newTran"
+                 required/>
+        </form>
+        <pre>
+          {{line | json}}
+        </pre>
       </accordion-group>
     </accordion>
   </div>
