@@ -33,12 +33,38 @@ class MakoServer < Sinatra::Base
                         'name', 'ep']).to_a
   end
 
-  get '/api/subs/:subs_id' do |id|
-    json settings.mongo_db['subs'].
-      find_one(_id: BSON::ObjectId(id))
+  post '/api/subs' do
   end
   
-  post '/api/subs' do
+  get '/api/subs/:subs_id' do |id|
+    if params['page']&&params['amount']
+      page = params['page'].to_i
+      amount = params['amount'].to_i
+      range = [page*amount, (page+1)*amount]
+      result = settings.mongo_db['subs'].
+        find_one({_id: BSON::ObjectId(id)},
+                 {fields: {lines: {'$slice' => range}}})
+    else
+      result = settings.mongo_db['subs'].
+        find_one({_id: BSON::ObjectId(id)})
+    end
+    json result
+  end
+
+  post '/api/subs/:subs_id' do |id|
+    p params
+    if params['trans']&&params['lineId']
+      line_id = params['lineId'].to_i
+      trans = JSON.parse(params['trans'])
+      result = settings.mongo_db['subs'].
+        update({_id: BSON::ObjectId(id),
+                 lines: {'$elemMatch' => {id: line_id}}},
+               {"$set" =>
+                 {"lines.$.trans" => trans}})
+      json result
+    else
+      halt 400
+    end
   end
   
   post '/api/script_upload' do
@@ -61,7 +87,7 @@ class MakoServer < Sinatra::Base
         json error: "Could not import from file"
       end
     else
-      json error: "File with this name already exists", subs: JSON.parse(params[:subs])
+      json error: "File with this name already exists"
     end
   end
 

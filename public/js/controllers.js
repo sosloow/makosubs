@@ -26,7 +26,12 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
         if(!line.trans)line.trans = [];
         line.trans.push(line.newTran);
         delete line.newTran;
-        line.isOpen = !line.isOpen;
+
+        $scope.subs.$updateTrans({
+          subsId: $routeParams.subsId,
+          lineId: line.id,
+          trans: JSON.stringify(line.trans)
+        });
       }
     };
 
