@@ -69,29 +69,52 @@ class MakoServer < Sinatra::Base
   post '/api/subs/:subs_id' do |id|
   end
 
+  get '/api/subs/:subs_id/lines/?' do |subs|
+    subs = settings.mongo_db['subs']
+      .find_one(_id: BSON::ObjectId(subs))
+
+    json settings.mongo_db['lines']
+      .find(subs_id: subs['_id']).to_a
+  end
+  
   get '/api/subs/:subs_id/lines/:line_id' do |subs, line|
     subs = settings.mongo_db['subs']
-      .find_one({_id: BSON::ObjectId(subs),
-                  'lines.id' => line.to_i},
-                {fields: {'lines.$' => 1, _id: 0}})
+      .find_one(_id: BSON::ObjectId(subs))
     
-    json subs.lines.first
+    json settings.mongo_db['lines']
+      .find_one(subs_id: subs['_id'], id: line.to_i)
   end
 
   post '/api/subs/:subs_id/lines/:line_id' do |subs, line|
-    trans = JSON.parse(params['trans'])
+    subs = settings.mongo_db['subs']
+      .find_one(_id: BSON::ObjectId(subs))
 
-    update({_id: BSON::ObjectId(subs),
-             'lines.id' => line.to_i},
-           {"$set" => {"lines.$.trans" => trans}}).
-    find_one({_id: BSON::ObjectId(subs),
-               'lines.id' => line},
-             {fields: {'lines.$' => 1, _id: 0}})
+    settings.mongo_db['lines']
+      .update({subs_id: subs['_id'], id: line.to_i},
+              {"$push" => {"trans" => params['trans']}})
 
-    json subs.lines.first
+    json settings.mongo_db['lines']
+      .find_one(subs_id: subs['_id'], id: line.to_i)
   end
 
-  get '/subs/?:subsId?' do
+  post '/api/subs/:subs_id/lines/:line_id/:trans_id' do
+    |subs, line, trans|
+    subs = settings.mongo_db['subs']
+      .find_one(_id: BSON::ObjectId(subs))
+
+    settings.mongo_db['lines']
+      .update({subs_id: subs['_id'], id: line.to_i},
+              {"$set" => {"trans.#{trans}" => params['trans']}})
+
+    json settings.mongo_db['lines']
+      .find_one(subs_id: subs['_id'], id: line.to_i)
+  end
+
+  get '/api/*' do
+    halt 403
+  end
+
+  get '*' do
     send_file 'public/index.html'
   end
 end
