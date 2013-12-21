@@ -7,38 +7,35 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
       var $file = $files[0];
       $scope.upload = $upload.upload({
         url: '/api/subs',
-        data: {subs: $scope.subs},
+        data: {animu: $scope.subs.animu,
+               ep: $scope.subs.ep},
         file: $file
-      }).success(function(data, status, headers, config) {
+      }).success(function(data) {
         $scope.subsPreview = data;
-        console.log(data);
       });
     };
   }])
   .controller('ListSubsCtrl', ['$scope', 'Subs', function($scope, Subs) {
     $scope.subsList = Subs.query();
   }])
-  .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs', function($scope, $routeParams, Subs) {
-    $scope.subs = Subs.preview({subsId: $routeParams.subsId});
+  .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs', 'Lines', 
+    function($scope, $routeParams, Subs, Lines) {
+      $scope.subs = Subs.get({subsId: $routeParams.subsId});
 
-    $scope.addTranslation = function(line) {
-      if (line.transForm.$valid) {
-        if(!line.trans)line.trans = [];
-        line.trans.push(line.newTran);
-        delete line.newTran;
-
-        $scope.subs.$updateTrans({
-          subsId: $routeParams.subsId,
-          lineId: line.id,
-          trans: JSON.stringify(line.trans)
-        });
-      }
-    };
-
-    $scope.isTranslated = function(line) {
-      if(line.trans)
-        return 'panel-success';
-      else
-        return 'panel-default';
-    };
+      $scope.$watch('subs', function(subs){
+        if(subs._id) $scope.lines = Lines.query({subsId: subs._id.$oid});
+      },true);
+      
+      $scope.addTranslation = function(line) {
+        if (line.transForm.$valid) {
+          line.$save();
+        }
+      };
+      
+      $scope.isTranslated = function(line) {
+        if(line.trans)
+          return 'panel-success';
+        else
+          return 'panel-default';
+      };
   }]);

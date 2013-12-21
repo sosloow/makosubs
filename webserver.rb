@@ -26,7 +26,7 @@ class MakoServer < Sinatra::Base
   end
 
   get '/api/subs' do
-    json settings.mongo_db['subs'].find.to_a
+    json settings.mongo_db['subs'].find().to_a
   end
 
   post '/api/subs' do
@@ -59,12 +59,6 @@ class MakoServer < Sinatra::Base
     json settings.mongo_db['subs']
       .find_one(_id: BSON::ObjectId(id))
   end
-
-  get '/api/subs/:subs_id/preview' do |id|
-    json settings.mongo_db['subs']
-      .find_one({_id: BSON::ObjectId(id)},
-        {fields: {lines: {'$slice' => [0,50]}}})
-  end
   
   post '/api/subs/:subs_id' do |id|
   end
@@ -74,7 +68,7 @@ class MakoServer < Sinatra::Base
       .find_one(_id: BSON::ObjectId(subs))
 
     json settings.mongo_db['lines']
-      .find(subs_id: subs['_id']).to_a
+      .find(subs_id: subs['_id']).sort(:id).to_a
   end
   
   get '/api/subs/:subs_id/lines/:line_id' do |subs, line|
@@ -86,12 +80,14 @@ class MakoServer < Sinatra::Base
   end
 
   post '/api/subs/:subs_id/lines/:line_id' do |subs, line|
+    translated = JSON.parse(request.body.read)
+
     subs = settings.mongo_db['subs']
       .find_one(_id: BSON::ObjectId(subs))
 
     settings.mongo_db['lines']
       .update({subs_id: subs['_id'], id: line.to_i},
-              {"$push" => {"trans" => params['trans']}})
+              {"$push" => {"trans" => translated['newTran']}})
 
     json settings.mongo_db['lines']
       .find_one(subs_id: subs['_id'], id: line.to_i)

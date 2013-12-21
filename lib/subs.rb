@@ -1,6 +1,7 @@
 #require 'bundler/setup'
 require_relative 'titlekit/lib/titlekit/parsers/ass'
 require_relative 'titlekit/lib/titlekit/parsers/ssa'
+require_relative 'titlekit/lib/titlekit/parsers/srt'
 
 module Subtitles
 

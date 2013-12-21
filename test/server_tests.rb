@@ -60,9 +60,7 @@ class MakoTest < MiniTest::Unit::TestCase
   end
 
   def test_that_lines_save_posted_translation
-    post "/api/subs/#{@subs['_id']}/lines/1", {
-      trans: 'мако, пжлст'
-    }
+    post "/api/subs/#{@subs['_id']}/lines/1", '{"newTran": "мако, пжлст"}'
     response = JSON.parse(last_response.body)
 
     assert_includes response['trans'], 'мако, пжлст'
