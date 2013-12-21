@@ -12,3 +12,8 @@ gem 'mongo'
 
 gem 'treetop'
 gem 'titlekit', git: 'git://github.com/sosloow/titlekit.git'
+
+group :test do
+  gem 'minitest'
+  gem 'mocha'
+end

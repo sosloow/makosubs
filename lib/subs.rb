@@ -8,7 +8,7 @@ module Subtitles
   
   def self.import(tmpfile, filename)
     data = File.read(tmpfile.path, encoding: 'bom|utf-8')
-    
+
     case File.extname(filename)
     when '.ass'
       ASS.import(data)

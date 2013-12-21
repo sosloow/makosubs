@@ -6,7 +6,7 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
     $scope.onFileSelect = function($files) {
       var $file = $files[0];
       $scope.upload = $upload.upload({
-        url: '/api/script_upload',
+        url: '/api/subs',
         data: {subs: $scope.subs},
         file: $file
       }).success(function(data, status, headers, config) {
@@ -19,7 +19,7 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
     $scope.subsList = Subs.query();
   }])
   .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs', function($scope, $routeParams, Subs) {
-    $scope.subs = Subs.get({subsId: $routeParams.subsId});
+    $scope.subs = Subs.preview({subsId: $routeParams.subsId});
 
     $scope.addTranslation = function(line) {
       if (line.transForm.$valid) {
