@@ -22,10 +22,10 @@
               ng-repeat="tran in line.trans"
               >{{tran}}</li>
         </ul>
-        <form name="line.transForm">
+        <form name="transForm">
           <input type="text" class="form-control" 
                  placeholder="Твой перевод"
-                 ng-enter="addTranslation(line)"
+                 ng-enter="addTranslation(line,transForm)"
                  ng-model="line.newTran"
                  required/>
         </form>

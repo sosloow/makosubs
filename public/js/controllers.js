@@ -22,16 +22,16 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
     function($scope, $routeParams, Subs, Lines) {
       $scope.subs = Subs.get({subsId: $routeParams.subsId});
 
-      $scope.$watch('subs', function(subs){
-        if(subs._id) $scope.lines = Lines.query({subsId: subs._id.$oid});
-      },true);
-      
-      $scope.addTranslation = function(line) {
-        if (line.transForm.$valid) {
+      $scope.$watch('subs._id.$oid', function(_id){
+        if(_id) $scope.lines = Lines.query({subsId: _id});
+      });
+
+      $scope.addTranslation = function(line, transForm) {
+        if (transForm.$valid) {
           line.$save();
         }
       };
-      
+
       $scope.isTranslated = function(line) {
         if(line.trans)
           return 'panel-success';
