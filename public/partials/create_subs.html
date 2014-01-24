@@ -1,21 +1,24 @@
 <div class="row">
   <script src="angular-file-upload.min.js"></script>
-  <div class="form col-xs-4">
-    <div class="form-group">
-      <label for="subsName">Название мультика</label>
-      <input type="text" class="form-control" id="subsName" ng-model="subs.animu"/>
-    </div>
-    <div class="form-group">
-      Номер серии
-      <select type="text" class="form-control"
-              ng-options="n+1 for n in [] | range:12" ng-model="subs.ep">
-      </select>
-    </div>
-    <div class="form-group">
-      <span class="btn btn-default btn-file">
-        Загрузить файл <input type="file" ng-file-select="onFileSelect($files)"/>
-      </span>
-    </div>
+  <div class="col-xs-4">
+    <form class="form" name="newSubs">
+      <div class="form-group">
+        <label for="subsName">Название мультика</label>
+        <input type="text" class="form-control" id="subsName"
+               ng-model="subs.animu" required/>
+      </div>
+      <div class="form-group">
+        Номер серии
+        <select type="text" class="form-control" required
+                ng-options="n+1 for n in [] | range:12" ng-model="subs.ep">
+        </select>
+      </div>
+      <div class="form-group">
+        <span class="btn btn-default btn-file" ng-disabled="newSubs.$invalid">
+          Загрузить файл <input type="file" ng-disabled="newSubs.$invalid" ng-file-select="onFileSelect($files)"/>
+        </span>
+      </div>
+    </form>
   </div>
   <div class="col-xs-8 subs-preview">
     <ul class="subs-lines list-unstyled"><li ng-repeat="line in subsPreview.lines">{{line}}</li></ul>

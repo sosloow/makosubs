@@ -3,11 +3,14 @@ require 'sinatra/base'
 require 'sinatra/json'
 require 'json'
 require 'mongo'
+require 'httparty'
+
 require_relative 'lib/subs'
+require_relative 'lib/ann_api'
 
 class MakoServer < Sinatra::Base
   include Mongo
-  
+
   configure do
     use Rack::Session::Pool, expire_after: 2_592_000
     set :mongo_connection, MongoClient.new('localhost', 27017)
@@ -20,13 +23,21 @@ class MakoServer < Sinatra::Base
   configure :test do
     set :mongo_db, settings.mongo_connection.db('mako_test')
   end
-  
+
+  configure :production do
+    set :mongo_db, settings.mongo_connection.db('mako_subs')
+  end
+
+  configure do
+    set :ann_api, AnnApi::Animu.new(settings.mongo_db['animus'])
+  end
+
   get '/' do
     send_file 'public/index.html'
   end
 
   get '/api/subs' do
-    json settings.mongo_db['subs'].find().to_a
+    json settings.mongo_db['subs'].find.to_a
   end
 
   post '/api/subs' do
@@ -59,7 +70,7 @@ class MakoServer < Sinatra::Base
     json settings.mongo_db['subs']
       .find_one(_id: BSON::ObjectId(id))
   end
-  
+
   post '/api/subs/:subs_id' do |id|
   end
 
@@ -70,11 +81,11 @@ class MakoServer < Sinatra::Base
     json settings.mongo_db['lines']
       .find(subs_id: subs['_id']).sort(:id).to_a
   end
-  
+
   get '/api/subs/:subs_id/lines/:line_id' do |subs, line|
     subs = settings.mongo_db['subs']
       .find_one(_id: BSON::ObjectId(subs))
-    
+
     json settings.mongo_db['lines']
       .find_one(subs_id: subs['_id'], id: line.to_i)
   end
@@ -104,6 +115,25 @@ class MakoServer < Sinatra::Base
 
     json settings.mongo_db['lines']
       .find_one(subs_id: subs['_id'], id: line.to_i)
+  end
+
+  get '/api/animu/search/?' do
+    json settings.mongo_db['animus']
+      .find({name: /#{params['q']}/i}).to_a
+  end
+
+  get '/api/animu/annsearch/?' do
+    json settings.ann_api.search(params['q'])
+  end
+
+  get '/api/animu/:id/' do |id|
+    animu = settings.mongo_db['animus'].find_one({id: id})
+
+    unless animu['episode']
+      animu = settings.ann_api.details(id).merge(ann: true)
+    end
+
+    json animu
   end
 
   get '/api/*' do

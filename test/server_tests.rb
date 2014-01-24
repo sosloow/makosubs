@@ -2,13 +2,16 @@
 ENV['RACK_ENV'] = 'test'
 
 require_relative '../webserver'
+require_relative 'helpers'
 require 'minitest/unit'
 require 'minitest/mock'
 require 'minitest/autorun'
 require 'rack/test'
+require 'pp'
 
-class MakoTest < MiniTest::Unit::TestCase
+class MakoServerTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods
+  include UnitHelpers
 
   def app
     MakoServer
@@ -22,6 +25,14 @@ class MakoTest < MiniTest::Unit::TestCase
     @db['lines'].insert [{lines: 'mako pls', subs_id: @subs['_id'], id: 1,
                          trans: ['мако, ёпт']},
                          {lines: 'mako pls', subs_id: @subs['_id'], id: 2}]
+    @db['animus'].insert({"id"=>"10924",
+                           "gid"=>"682557990",
+                           "type"=>"TV",
+                           "name"=>"Melancholy of Haruhi Suzumiya",
+                           "precision"=>"TV 2009 renewal",
+                           "vintage"=>"2009-04-03",
+                           "searched_title"=>"[The ]Melancholy of Haruhi Suzumiya"
+                         })
   end
 
   def teardown
@@ -69,11 +80,51 @@ class MakoTest < MiniTest::Unit::TestCase
   def test_that_lines_update_posted_translation
     post "/api/subs/#{@subs['_id']}/lines/1/0", {
       trans: 'мако, пжлст'
-    }   
+    }
     response = JSON.parse(last_response.body)
 
     refute_empty response['trans']
     assert_includes response['trans'], 'мако, пжлст'
     refute_includes response['trans'], 'мако, епт'
-  end  
+  end
+
+  def test_animu_search
+    query = 'haruhi'
+    get '/api/animu/search', { q: query}
+    response = JSON.parse(last_response.body)
+
+    assert_match /#{query}/i, response.first['name']
+  end
+
+  def test_animu_details
+    id = '10924'
+    data = open('test/samples/api.xml') { |f| MultiXml.parse(f.read) }
+
+    AnnApi::Animu.stub :get, data do
+      get "/api/animu/#{id}/"
+
+      response = JSON.parse(last_response.body)
+      assert_equal id, response['id']
+      refute_nil response['ann']
+
+      get "/api/animu/#{id}/"
+
+      response = JSON.parse(last_response.body)
+      assert_equal id, response['id']
+      assert_nil response['ann']
+    end
+  end
+
+  def test_ann_search
+    query = 'haruhi'
+    data = open('test/samples/reports.xml') { |f| MultiXml.parse(f.read) }
+
+    AnnApi::Animu.stub :get, data do
+      get '/api/animu/annsearch', {q: query}
+
+      response = JSON.parse(last_response.body)
+
+      assert_match /#{query}/i, response.first['name']
+    end
+  end
 end

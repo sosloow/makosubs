@@ -1,8 +1,8 @@
 'use strict';
-angular.module('MakoSubs.controllers', ['angularFileUpload']).
-  controller('AppCtrl', ['$scope', function($scope) {
-  }]).
-  controller('CreateSubsCtrl', ['$scope', '$upload', function($scope, $upload) {
+angular.module('MakoSubs.controllers', ['angularFileUpload'])
+  .controller('AppCtrl', ['$scope', function($scope) {
+  }])
+  .controller('CreateSubsCtrl', ['$scope', '$upload', function($scope, $upload) {
     $scope.onFileSelect = function($files) {
       var $file = $files[0];
       $scope.upload = $upload.upload({
@@ -18,8 +18,8 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
   .controller('ListSubsCtrl', ['$scope', 'Subs', function($scope, Subs) {
     $scope.subsList = Subs.query();
   }])
-  .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs', 'Lines', 
-    function($scope, $routeParams, Subs, Lines) {
+  .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs', 'Lines',
+                               function($scope, $routeParams, Subs, Lines) {
       $scope.subs = Subs.get({subsId: $routeParams.subsId});
 
       $scope.$watch('subs._id.$oid', function(_id){
@@ -27,9 +27,7 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
       });
 
       $scope.addTranslation = function(line, transForm) {
-        if (transForm.$valid) {
-          line.$save();
-        }
+        if (transForm.$valid) line.$save();
       };
 
       $scope.isTranslated = function(line) {
@@ -38,4 +36,6 @@ angular.module('MakoSubs.controllers', ['angularFileUpload']).
         else
           return 'panel-default';
       };
+  }])
+  .controller('ListAnimusCtrl', ['$scope', 'Animus', function($scope, Animus){
   }]);

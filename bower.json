@@ -3,7 +3,8 @@
     "angular" : "latest",
     "ng-file-upload" : "latest",
     "angular-route": "latest",
-    "angular-resource": "latest"
+    "angular-resource": "latest",
+    "angular-bootstrap": "latest"
   },
   "devDependencies": {
     "angular-mocks": "latest",
@@ -13,7 +14,9 @@
     "path": "public/lib",
     "sources": {
       "angular": ["bower_components/angular/angular.js",
-                  "bower_components/angular/angular.min.js"]
-    }
+                  "bower_components/angular/angular.min.js"],
+      "angular-bootstrap": "bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"
+    },
+    "ignore": ["bootstrap"]
   }
 }

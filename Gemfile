@@ -10,6 +10,8 @@ gem 'bson'
 gem 'bson_ext'
 gem 'mongo'
 
+gem 'httparty'
+
 gem 'treetop'
 gem 'titlekit', git: 'git://github.com/sosloow/titlekit.git'
 
