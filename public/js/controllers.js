@@ -18,8 +18,10 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
   .controller('ListSubsCtrl', ['$scope', 'Subs', function($scope, Subs) {
     $scope.subsList = Subs.query();
   }])
-  .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs', 'Lines',
-                               function($scope, $routeParams, Subs, Lines) {
+  .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs',
+                               'Lines',
+                               function($scope, $routeParams, Subs,
+                                        Lines) {
       $scope.subs = Subs.get({subsId: $routeParams.subsId});
 
       $scope.$watch('subs._id.$oid', function(_id){
@@ -27,15 +29,26 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
       });
 
       $scope.addTranslation = function(line, transForm) {
-        if (transForm.$valid) line.$save();
-      };
-
-      $scope.isTranslated = function(line) {
-        if(line.trans)
-          return 'panel-success';
-        else
-          return 'panel-default';
+        if (transForm.$valid) {
+          line.$save(function(){
+            line.open = false;
+            var nextLines = $scope.lines.filter(function(l){
+              return !l.trans && $scope.lines.indexOf(line) < $scope.lines.indexOf(l);
+            });
+            if(nextLines.length>0) nextLines[0].open = true;
+          });
+        }
       };
   }])
   .controller('ListAnimusCtrl', ['$scope', 'Animus', function($scope, Animus){
   }]);
+
+
+
+
+
+
+
+
+
+
