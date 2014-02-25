@@ -2,7 +2,14 @@
 angular.module('MakoSubs.controllers', ['angularFileUpload'])
   .controller('AppCtrl', ['$scope', function($scope) {
   }])
-  .controller('CreateSubsCtrl', ['$scope', '$upload', function($scope, $upload) {
+  .controller('CreateSubsCtrl', 
+              ['$scope', '$upload', '$http', 'Animus',
+               function($scope, $upload, $http, Animus) {
+
+    $scope.subs = {animu: {}};
+    $scope.needSearch = false;
+    $scope.animuQuery = '';
+
     $scope.onFileSelect = function($files) {
       var $file = $files[0];
       $scope.upload = $upload.upload({
@@ -14,14 +21,42 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
         $scope.subsPreview = data;
       });
     };
+
+    $scope.searchAnimus = function(query){
+      $scope.subs.ep = 1;
+
+      return $http.get('/api/animu/search',
+                      {params: {q: query}})
+      .then(function(res){
+        $scope.animuQuery = query;
+
+        if (query && query.length>4 && res.data.length==0)
+          $scope.needSearch = true;
+        else
+          $scope.needSearch = false;
+
+        return res.data;
+      });
+    };
+
+    $scope.searchAnn = function(query){
+      return $http.get('/api/animu/annsearch',
+                      {params: {q: query}})
+      .then(function(res){
+        return res.data;
+      });
+    };    
+
+    $scope.getAnimu = function(animu){
+      $scope.subs.animu = Animus.get({animuId: animu.id});
+    };
   }])
   .controller('ListSubsCtrl', ['$scope', 'Subs', function($scope, Subs) {
     $scope.subsList = Subs.query();
   }])
-  .controller('ShowSubsCtrl', ['$scope', '$routeParams', 'Subs',
-                               'Lines',
-                               function($scope, $routeParams, Subs,
-                                        Lines) {
+  .controller('ShowSubsCtrl', 
+              ['$scope', '$routeParams', 'Subs', 'Lines',
+               function($scope, $routeParams, Subs, Lines) {
       $scope.subs = Subs.get({subsId: $routeParams.subsId});
 
       $scope.$watch('subs._id.$oid', function(_id){
@@ -42,13 +77,3 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
   }])
   .controller('ListAnimusCtrl', ['$scope', 'Animus', function($scope, Animus){
   }]);
-
-
-
-
-
-
-
-
-
-

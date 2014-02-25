@@ -101,14 +101,12 @@ class MakoServerTest < MiniTest::Unit::TestCase
     data = open('test/samples/api.xml') { |f| MultiXml.parse(f.read) }
 
     AnnApi::Animu.stub :get, data do
-      get "/api/animu/#{id}/"
-
+      get "/api/animu/#{id}"
       response = JSON.parse(last_response.body)
       assert_equal id, response['id']
       refute_nil response['ann']
 
-      get "/api/animu/#{id}/"
-
+      get "/api/animu/#{id}"
       response = JSON.parse(last_response.body)
       assert_equal id, response['id']
       assert_nil response['ann']

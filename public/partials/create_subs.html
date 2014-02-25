@@ -4,13 +4,24 @@
     <form class="form" name="newSubs">
       <div class="form-group">
         <label for="subsName">Название мультика</label>
-        <input type="text" class="form-control" id="subsName"
-               ng-model="subs.animu" required/>
+        <div class="input-group">
+          <input type="text" class="form-control" id="subsName" ng-model="animu"
+                 typeahead="animu as animu.name for animu in searchAnimus($viewValue) | filter:$viewValue | limitTo:8"
+                 typeahead-editable="false" typeahead-on-select="getAnimu(animu)" typeahead-wait-ms="500" required/>
+          <span class="input-group-btn">
+            <button class="btn btn-default"
+                    ng-disabled="!needSearch"
+                    ng-click="searchAnn(animuQuery)">
+              Искать в ANN
+            </button>
+          </span>
+        </div>
       </div>
       <div class="form-group">
         Номер серии
         <select type="text" class="form-control" required
-                ng-options="n+1 for n in [] | range:12" ng-model="subs.ep">
+                ng-options="n for n in [] | range:subs.animu.episodes"
+                ng-model="subs.ep" ng-disabled="subs.animu.episodes=='1'">
         </select>
       </div>
       <div class="form-group">
@@ -20,7 +31,25 @@
       </div>
     </form>
   </div>
-  <div class="col-xs-8 subs-preview">
-    <ul class="subs-lines list-unstyled"><li ng-repeat="line in subsPreview.lines">{{line}}</li></ul>
+  <div class="col-xs-8">
+    <div class="panel panel-primary" ng-show="subs.animu.name">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{subs.animu.name}}</h3>
+      </div>
+      <div class="panel-body">
+          <img ng-src="{{subs.animu.image}}" ng-show="subs.animu.image"
+          alt="{{subs.animu.name}} cover"/>
+          <dl class="dl-horizontal">
+            <dt>Дата выхода</dt><dd>{{subs.animu.date | mydate | date }}</dd>
+            <dt>Формат</dt><dd>{{subs.animu.type}}</dd>
+            <dt>Теги</dt><dd>
+              <span class="animu-tag label label-primary" 
+                    ng-repeat="tag in subs.animu.tags"
+                    >{{tag}}</span>
+            </dd>
+            <dt>Описание</dt><dd>{{subs.animu.plot}}</dd>
+          </dl>
+      </div>
+    </div>
   </div>
 </div>

@@ -9,5 +9,5 @@ angular.module('MakoSubs.services', ['ngResource'])
                      {subsId: '@subs_id.$oid', lineId: '@id'});
   }])
   .factory('Animus', ['$resource', function($resource){
-    return $resource('http://mal-api.com/anime/search');
+    return $resource('/api/animu/:animuId');
   }]);

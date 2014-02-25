@@ -4,6 +4,7 @@ require 'sinatra/json'
 require 'json'
 require 'mongo'
 require 'httparty'
+require 'uri'
 
 require_relative 'lib/subs'
 require_relative 'lib/ann_api'
@@ -26,10 +27,6 @@ class MakoServer < Sinatra::Base
 
   configure :production do
     set :mongo_db, settings.mongo_connection.db('mako_subs')
-  end
-
-  configure do
-    set :ann_api, AnnApi::Animu.new(settings.mongo_db['animus'])
   end
 
   get '/' do
@@ -123,14 +120,16 @@ class MakoServer < Sinatra::Base
   end
 
   get '/api/animu/annsearch/?' do
-    json settings.ann_api.search(params['q'])
+    ann_api = AnnApi::Animu.new(settings.mongo_db['animus'])
+    json ann_api.search(params['q'])
   end
 
-  get '/api/animu/:id/' do |id|
-    animu = settings.mongo_db['animus'].find_one({id: id})
+  get '/api/animu/:id' do |id|
+    animu = settings.mongo_db['animus'].find_one(id: id)
 
-    unless animu['episode']
-      animu = settings.ann_api.details(id).merge(ann: true)
+    unless animu['episodes']
+      ann_api = AnnApi::Animu.new(settings.mongo_db['animus'])
+      animu = ann_api.details(id).merge(ann: true)
     end
 
     json animu

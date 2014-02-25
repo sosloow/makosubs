@@ -1,10 +1,16 @@
 'use strict';
-angular.module('MakoSubs.filters', []).
-  filter('range', function() {
+angular.module('MakoSubs.filters', [])
+  .filter('range', function() {
     return function(input, total) {
       total = parseInt(total);
-      for (var i=0; i<total; i++)
+      for (var i=1; i<total; i++)
         input.push(i);
     return input;
+    };
+  })
+
+  .filter('mydate', function() {
+    return function(dateString) {
+      return new Date(dateString);
     };
   });

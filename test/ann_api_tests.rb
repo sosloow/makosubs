@@ -40,13 +40,18 @@ class AnnApiTest < MiniTest::Unit::TestCase
     end
   end
 
-  def test_it_updates_db_document_on_details
+  def test_it_updates_db_document_on_details_and_saves_image
     id = 10924
+    image_dir = 'public/files/animus/'
+    image_web_dir = '/files/animus/'
     data = open('test/samples/api.xml') { |f| MultiXml.parse(f.read) }
 
     AnnApi::Animu.stub :get, data do
       result = @animu.details(id)
+
       assert_equal result['id'], @db['animu'].find_one(id: id.to_s)['id']
+      assert_equal result['image'], image_web_dir + 'A10924-315.jpg'
+      assert File.exists?(image_dir + 'A10924-315.jpg')
     end
   end
 end

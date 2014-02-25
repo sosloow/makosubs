@@ -18,3 +18,17 @@
 }
 
 .nav, .pagination, .carousel a { cursor: pointer; }
+
+.dl-horizontal dt{
+    text-align: left;
+    width: auto;
+    padding-right: 1em;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+
+.animu-tag {
+    margin-left:.2em;
+}

@@ -3,6 +3,7 @@ files/*
 logs/*
 tmp/*
 public/lib/*
+public/files/*
 test/lib/*
 *~
 #*#
