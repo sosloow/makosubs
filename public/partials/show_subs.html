@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-xs-4"> 
+  <div class="col-xs-4">
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title">{{subs.filename}}</h3>
@@ -9,6 +9,7 @@
           <dt>Мультик</dt><dd>{{subs.animu}}</dd>
           <dt>Серия</dt><dd>{{subs.ep}}</dd>
         </dl>
+        <button ng-click="exportSubs()">Экспорт</button>
       </div>
     </div>
   </div>
@@ -16,16 +17,16 @@
     <accordion close-others="false">
       <accordion-group ng-repeat="line in lines"
                        ng-class="{'panel-success': line.trans,
-                                 'panel-default': !line.trans}" 
+                                 'panel-default': !line.trans}"
                        is-open="line.open"
                        heading="{{line.lines}}">
         <ul class="list-group">
-          <li class="list-group-item" 
+          <li class="list-group-item"
               ng-repeat="tran in line.trans"
               >{{tran}}</li>
         </ul>
         <form name="transForm">
-          <input type="text" class="form-control" 
+          <input type="text" class="form-control"
                  placeholder="Твой перевод" focus-me="line.open"
                  ng-enter="addTranslation(line,transForm)"
                  ng-model="line.newTran"

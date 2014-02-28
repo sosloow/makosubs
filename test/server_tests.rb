@@ -23,8 +23,9 @@ class MakoServerTest < MiniTest::Unit::TestCase
     @subs = @db[:subs].find_one(filename: 'klk1.ass')
 
     @db['lines'].insert [{lines: 'mako pls', subs_id: @subs['_id'], id: 1,
-                         trans: ['мако, ёпт']},
-                         {lines: 'mako pls', subs_id: @subs['_id'], id: 2}]
+                           trans: ['мако, ёпт'], start: 10.77, end: 15.17},
+                         {lines: 'mako pls', subs_id: @subs['_id'], id: 2,
+                           start: 15.17, end: 19.17}]
     @db['animus'].insert({"id"=>"10924",
                            "gid"=>"682557990",
                            "type"=>"TV",
@@ -48,10 +49,10 @@ class MakoServerTest < MiniTest::Unit::TestCase
     response = JSON.parse(last_response.body)
 
     assert_nil response['error']
-    assert_equal 'sample.ass', response['filename']
+    assert_equal "[makosubs]_test_animu_1.ass", response['filename']
     assert_equal 'test animu', response['animu']
 
-    subs = @db[:subs].find_one(filename: 'sample.ass')
+    subs = @db[:subs].find_one(filename: '[makosubs]_test_animu_1.ass')
     refute_nil subs
     refute_empty @db['lines'].find(subs_id: subs['_id']).to_a
   end
@@ -86,6 +87,15 @@ class MakoServerTest < MiniTest::Unit::TestCase
     refute_empty response['trans']
     assert_includes response['trans'], 'мако, пжлст'
     refute_includes response['trans'], 'мако, епт'
+  end
+
+  def test_export_of_subs_to_file
+    post "/api/subs/#{@subs['_id']}"
+
+    response = JSON.parse(last_response.body)
+
+    assert response['download']
+    assert File.exists? "public/#{response['download']}"
   end
 
   def test_animu_search

@@ -38,8 +38,12 @@ class MakoServer < Sinatra::Base
   end
 
   post '/api/subs' do
+    group = params['group'] || 'makosubs'
+    animu = params['animu'].gsub(/\s+/, '_').downcase
+    ext = File.extname(params[:file][:filename])
+
     tmpfile = params[:file][:tempfile]
-    filename = params[:file][:filename]
+    filename = "[#{group}]_#{animu}_#{params['ep']}#{ext}"
 
     subs_col = settings.mongo_db['subs']
     lines_col = settings.mongo_db['lines']
@@ -69,6 +73,24 @@ class MakoServer < Sinatra::Base
   end
 
   post '/api/subs/:subs_id' do |id|
+    export_dir = 'public/files/subs'
+    export_web_dir = '/files/subs'
+
+    subs = settings.mongo_db['subs']
+      .find_one(_id: BSON::ObjectId(id))
+    lines = settings.mongo_db['lines']
+      .find(subs_id: subs['_id']).sort(:id).to_a
+
+    if Subtitles.export(lines, "#{export_dir}/#{subs['filename']}") > 0
+      settings.mongo_db['subs']
+        .update({_id: BSON::ObjectId(id)},
+                {'$set' => {download: "#{export_web_dir}/#{subs['filename']}"}})
+      json settings.mongo_db['subs']
+        .find_one(_id: BSON::ObjectId(id))
+    else
+      status 400
+      json error: 'Could not export the subs'
+    end
   end
 
   get '/api/subs/:subs_id/lines/?' do |subs|
@@ -108,7 +130,7 @@ class MakoServer < Sinatra::Base
 
     settings.mongo_db['lines']
       .update({subs_id: subs['_id'], id: line.to_i},
-              {"$set" => {"trans.#{trans}" => params['trans']}})
+              {'$set' => {"trans.#{trans}" => params['trans']}})
 
     json settings.mongo_db['lines']
       .find_one(subs_id: subs['_id'], id: line.to_i)
