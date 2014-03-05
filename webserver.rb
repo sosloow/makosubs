@@ -157,6 +157,25 @@ class MakoServer < Sinatra::Base
     json animu
   end
 
+  get '/api/threads' do
+    json settings.mongo_db['threads']
+      .find.to_a
+  end
+
+  get '/api/threads/:thread_id' do |id|
+    thread = settings.mongo_db['threads']
+      .find_one(_id: BSON::ObjectId(id))
+
+    if params['limit']
+      json settings.mongo_db['posts']
+        .find(thread_id: thread['_id'])
+        .limit(params['limit'].to_i).sort(:time).to_a
+    else
+      json settings.mongo_db['posts']
+        .find(thread_id: thread['_id']).sort(:time).to_a
+    end
+  end
+
   get '/api/*' do
     halt 403
   end

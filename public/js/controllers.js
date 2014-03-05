@@ -43,6 +43,7 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
       return $http.get('/api/animu/annsearch',
                       {params: {q: query}})
       .then(function(res){
+        $scope.needSearch = false;
         return res.data;
       });
     };    
@@ -58,10 +59,20 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
               ['$scope', '$routeParams', 'Subs', 'Lines',
                function($scope, $routeParams, Subs, Lines) {
       $scope.subs = Subs.get({subsId: $routeParams.subsId});
+      $scope.lines = [];
+      $scope.count = 50;
+
+      $scope.addCount = function() {$scope.count += 1;};
 
       $scope.$watch('subs._id.$oid', function(_id){
-        if(_id) $scope.lines = Lines.query({subsId: _id});
+        if(_id) $scope.lines = Lines.query({subsId: _id}, function(data){
+          $scope.translatedCount = data.filter(function(line){
+            return line.trans;
+          }).length;
+          $scope.totalCount = data.length;
+        });
       });
+
 
       $scope.addTranslation = function(line, transForm) {
         if (transForm.$valid) {
@@ -71,8 +82,21 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
               return !l.trans && $scope.lines.indexOf(line) < $scope.lines.indexOf(l);
             });
             if(nextLines.length>0) nextLines[0].open = true;
+
+            $scope.translatedCount = $scope.lines.filter(function(line){
+              return line.trans;
+            }).length;
           });
         }
+      };
+
+      $scope.exportSubs = function() {
+        $scope.subs.$save(
+          {subsId: $routeParams.subsId},
+          function(data){
+          },
+          function(error){
+          });
       };
   }])
   .controller('ListAnimusCtrl', ['$scope', 'Animus', function($scope, Animus){

@@ -9,7 +9,17 @@
           <dt>Мультик</dt><dd>{{subs.animu}}</dd>
           <dt>Серия</dt><dd>{{subs.ep}}</dd>
         </dl>
-        <button ng-click="exportSubs()">Экспорт</button>
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" 
+               aria-valuenow="{{translatedCount}}" aria-valuemin="0" 
+               aria-valuemax="{{totalCount}}" 
+               style="width: {{translatedCount / totalCount * 100}}%;">
+            {{translatedCount}} / {{totalCount}}
+          </div>
+        </div>
+        <a class="btn btn-primary" ng-disabled="!subs.download"
+           ng-href="{{subs.download}}">Скачать</a>
+        <button class="btn btn-primary" ng-click="exportSubs()">Экспорт</button>
       </div>
     </div>
   </div>

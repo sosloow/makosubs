@@ -15,7 +15,7 @@ module AnnApi
 
       if result.class == Hash
         @animus.insert(result) unless @animus.find_one(id: result['id'])
-      else
+      elsif result.class == Array
         result.each do |entry|
           @animus.insert(entry) unless @animus.find_one(id: entry['id'])
         end
@@ -43,12 +43,10 @@ module AnnApi
       @details = details['ann']['anime']
 
       date = Date.parse(info_field('Vintage'))
+      @details['date'] = Time.utc(date.year, date.month, date.day)
       @details['image'] = save_image(@details)
       @details['episodes'] = info_field('Number of episodes') || '1'
       @details['plot'] = info_field('Plot Summary')
-      
-      @details['date'] = Time.utc(date.year, date.month, date.day)
-      # @details['date'] = info_field('Vintage')
       @details['tags'] = @details['info']
         .select { |info| ['Themes', 'Genres'].include?(info['type']) }
         .map { |info| info['__content__'] }
@@ -82,7 +80,7 @@ module AnnApi
       end
     end
 
-    def info_field(name,field='__content__')
+    def info_field(name, field='__content__')
       xml_content(@details,'info','type',name,field)
     end
   end
