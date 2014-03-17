@@ -13,6 +13,7 @@ config(['$routeProvider', '$locationProvider', function($routeProvider, $locatio
     .when('/subs/?', {templateUrl: 'partials/list_subs.html', controller: 'ListSubsCtrl'})
     .when('/subs/:subsId', {templateUrl: 'partials/show_subs.html', controller: 'ShowSubsCtrl'})
     .when('/animu/?', {templateUrl: 'partials/list_animu.html', controller: 'ListSubsCtrl'})
+    .when('/b/?', {templateUrl: 'partials/messageboard.html', controller: 'MessageBoardCtrl'})
     .otherwise({redirectTo: '/'});
   $locationProvider.html5Mode(true);
 }]);

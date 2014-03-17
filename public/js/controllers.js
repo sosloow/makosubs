@@ -93,11 +93,25 @@ angular.module('MakoSubs.controllers', ['angularFileUpload'])
       $scope.exportSubs = function() {
         $scope.subs.$save(
           {subsId: $routeParams.subsId},
-          function(data){
-          },
-          function(error){
-          });
+          function(data){},
+          function(error){});
       };
   }])
   .controller('ListAnimusCtrl', ['$scope', 'Animus', function($scope, Animus){
+  }])
+  .controller('MessageBoardCtrl', ['$scope', 'Threads', '$http',
+                                   function($scope, Threads, $http){
+    $scope.postsLimit  = 5;
+
+    $http.get('/api/threads/count')
+    .then(function(res){
+      $scope.threadsCount = res.data.count;
+    });
+    $scope.threads = Threads.query();
+    $scope.maxSize = 5;
+
+    $scope.pageSelect = function(page) {
+      $scope.threads = Threads.query({page: page-1});
+    };
   }]);
+

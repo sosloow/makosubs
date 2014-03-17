@@ -157,23 +157,42 @@ class MakoServer < Sinatra::Base
     json animu
   end
 
-  get '/api/threads' do
-    json settings.mongo_db['threads']
-      .find.to_a
+  get '/api/threads/count' do
+    count = settings.mongo_db['threads'].count
+    json count: count
   end
 
-  get '/api/threads/:thread_id' do |id|
+  get '/api/threads/:page' do
+    amount = 10
+    json settings.mongo_db['threads']
+      .find.sort(:date)
+      .skip(params['page'].to_i*amount)
+      .limit(amount).to_a
+  end
+
+  get '/api/threads/res/:thread_id' do |id|
     thread = settings.mongo_db['threads']
       .find_one(_id: BSON::ObjectId(id))
+  end
 
-    if params['limit']
-      json settings.mongo_db['posts']
-        .find(thread_id: thread['_id'])
-        .limit(params['limit'].to_i).sort(:time).to_a
-    else
-      json settings.mongo_db['posts']
-        .find(thread_id: thread['_id']).sort(:time).to_a
-    end
+  get '/api/threads/res/?' do
+    thread = settings.mongo_db['threads']
+      .insert(params)
+
+    json settings.mongo_db['threads']
+      .find_one(_id: thread)
+  end
+
+  post '/api/threads/res/:thread_id' do |id|
+    thread = settings.mongo_db['threads']
+      .update({_id: BSON::ObjectId(id)},
+              {'$set' => {date: Time.now.to_i},
+                '$push' => {posts:
+                  {date: Time.now.to_i,
+                    body: params['body']}}})
+
+    json settings.mongo_db['threads']
+      .find_one(_id: BSON::ObjectId(id))
   end
 
   get '/api/*' do

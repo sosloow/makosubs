@@ -1,0 +1,30 @@
+<div>
+  <p>{{thread.date * 1000 | date}}</p>
+  <p>{{thread.op.title}}</p>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="post in filteredPosts">
+      <p>{{post.time * 1000 | date}}</p>
+      <p>{{post.body}}</p>
+    </li>
+    <div class="form" ng-show="showForm">
+      <textarea class="form-control" 
+                rows="10" cols="30" 
+                ng-model="newPost">
+      </textarea>
+    </div>
+    <button class="btn btn-primary" ng-click="toggleThread()">
+      {{buttonText(open)}}
+    </button>
+    <button class="btn btn-primary" 
+            ng-click="toggleForm()"
+            ng-hide="showForm">
+      Ответить
+    </button>
+    <button class="btn btn-primary" 
+            ng-click="postPost()"
+            ng-show="showForm">
+      Ответить
+    </button>
+  </ul>
+</div>
+

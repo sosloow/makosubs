@@ -26,6 +26,8 @@ class MakoServerTest < MiniTest::Unit::TestCase
                            trans: ['мако, ёпт'], start: 10.77, end: 15.17},
                          {lines: 'mako pls', subs_id: @subs['_id'], id: 2,
                            start: 15.17, end: 19.17}]
+    @db['threads'].insert [{op: {title: 'blah', body: 'blah'}, posts: []},
+                           {op: {title: 'blah2', body: 'blah2'}, posts: []}]
     @db['animus'].insert({"id"=>"10924",
                            "gid"=>"682557990",
                            "type"=>"TV",
@@ -134,5 +136,11 @@ class MakoServerTest < MiniTest::Unit::TestCase
 
       assert_match /#{query}/i, response.first['name']
     end
+  end
+
+  def test_threads_count
+    get '/api/threads/count'
+    response = JSON.parse(last_response.body)
+    assert_equal 2, response['count']
   end
 end

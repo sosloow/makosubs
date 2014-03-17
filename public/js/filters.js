@@ -7,10 +7,4 @@ angular.module('MakoSubs.filters', [])
         input.push(i);
     return input;
     };
-  })
-
-  .filter('mydate', function() {
-    return function(dateString) {
-      return new Date(dateString);
-    };
   });

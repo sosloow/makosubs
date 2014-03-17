@@ -1,0 +1,13 @@
+<div class="row">
+  <ul class="list-group">
+    <li class="list-group-item" 
+        ng-repeat="thread in threads">
+      <thread limit="postsLimit" thread="thread">
+      </thread>
+    </li>
+  </ul>
+  <pagination total-items="threadsCount" page="currentPage" 
+              max-size="maxSize" class="pagination-sm" 
+              boundary-links="true" on-select-page="pageSelect(page)">
+  </pagination>
+</div>
